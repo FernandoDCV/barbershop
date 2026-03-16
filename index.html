@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- 
+        SISTEMA DE GESTIÓN Y RESERVAS "LEGACY BARBER POLE"
+        PROPIEDAD INTELECTUAL: FERNANDO DAVID CAJIAS VACA
+        VERSIÓN: 2.7.0 (PREMIUM QUITO EDITION - DESIGN REFINED)
+        ARQUITECTURA: SERVERLESS (HTML5/JS + GOOGLE APPS SCRIPT)
+        DISEÑO: INDUSTRIAL DARK PREMIUM CON MARCA DE AGUA REFINADA
+    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barber Pole Elite | Premium Booking Quito</title>
+    <meta name="author" content="Fernando David Cajias Vaca">
+    <meta name="copyright" content="Fernando David Cajias Vaca © 2026">
+    <title>Legacy BP | Reserva Élite - Quito</title>
+    
+    <!-- Frameworks & Fuentes -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
         :root {
             --barber-red: #ef4444;
             --barber-blue: #3b82f6;
             --bg-dark: #080808;
         }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-dark);
@@ -20,35 +33,49 @@
             -webkit-tap-highlight-color: transparent;
             scroll-behavior: smooth;
         }
+
         .font-brand { font-family: 'Bebas Neue', cursive; }
-        
-        /* Barber Pole Animation */
+
+        /* Animación del Poste de Barbería en los Bordes del Logo */
         .barber-border {
             position: relative;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
         }
+
         .barber-border::before {
             content: '';
             position: absolute;
             top: -50%; left: -50%;
             width: 200%; height: 200%;
-            background: repeating-linear-gradient(45deg, var(--barber-red), var(--barber-red) 10px, #fff 10px, #fff 20px, var(--barber-blue) 20px, var(--barber-blue) 30px, #fff 30px, #fff 40px);
+            background: repeating-linear-gradient(
+                45deg, 
+                var(--barber-red), var(--barber-red) 10px, 
+                #fff 10px, #fff 20px, 
+                var(--barber-blue) 20px, var(--barber-blue) 30px, 
+                #fff 30px, #fff 40px
+            );
             opacity: 0.15;
             animation: barber-roll 20s linear infinite;
             z-index: 0;
             pointer-events: none;
         }
-        @keyframes barber-roll { from { transform: translate(0, 0); } to { transform: translate(20%, 20%); } }
 
+        @keyframes barber-roll {
+            from { transform: translate(0, 0); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        /* Capas con desenfoque de cristal */
         .glass {
-            background: rgba(8, 8, 8, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(8, 8, 8, 0.9);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 100;
         }
         
+        /* Botón Principal con Gradiente en Movimiento */
         .btn-barber {
             background: linear-gradient(90deg, var(--barber-red) 0%, #fff 50%, var(--barber-blue) 100%);
             background-size: 200% auto;
@@ -56,210 +83,412 @@
             animation: gradient-shift 3s linear infinite;
             transition: all 0.3s ease;
         }
-        @keyframes gradient-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        .hero-image {
-            background: linear-gradient(to bottom, rgba(8,8,8,0.7) 0%, rgba(8,8,8,0.3) 50%, var(--bg-dark) 95%), 
-                        url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover; background-position: center;
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
-        .category-tab.active {
-            border-color: var(--barber-red);
-            color: white;
-            background: rgba(239, 68, 68, 0.1);
+        /* Hero Image con Overlay Optimizado */
+        .hero-section {
+            background: linear-gradient(to bottom, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0.2) 50%, var(--bg-dark) 95%), 
+                        url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1200');
+            background-size: cover; 
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .animate-marquee { display: flex; width: 200%; animation: marquee 20s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        /* Estilos de disponibilidad de horarios */
+        .time-slot-disabled {
+            opacity: 0.1;
+            pointer-events: none;
+            background: rgba(255,255,255,0.02) !important;
+            border: 1px dashed rgba(255,255,255,0.1) !important;
+            color: rgba(255,255,255,0.2) !important;
+        }
+
+        .time-slot-occupied {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border-color: rgba(239, 68, 68, 0.3) !important;
+            color: var(--barber-red) !important;
+            pointer-events: none;
+            position: relative;
+        }
+
+        /* Estructura del Ticket Final */
+        .ticket-cut {
+            clip-path: polygon(0% 0%, 100% 0%, 100% 95%, 95% 100%, 5% 100%, 0% 95%);
+        }
+
+        /* Animación de Texto Infinito (Marca de Agua) en una sola línea */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: fit-content;
+            animation: marquee 30s linear infinite;
+        }
+
+        .scroll-indicator { animation: bounce 2s infinite; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
 
         .hide { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen overflow-x-hidden">
 
-    <!-- HEADER -->
-    <nav class="fixed top-0 w-full glass px-6 py-4 flex justify-between items-center">
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+    <nav class="fixed top-0 w-full glass px-6 py-4 flex justify-between items-center border-b border-white/5">
         <div class="flex items-center gap-3 cursor-pointer" onclick="changeView('view-home')">
             <div class="w-10 h-10 barber-border rounded-lg flex items-center justify-center overflow-hidden shadow-lg">
                 <i data-lucide="scissors" class="text-white w-5 h-5 relative z-10"></i>
             </div>
-            <div class="flex flex-col">
-                <span class="font-brand text-2xl tracking-widest leading-none mt-1 text-white uppercase">Legacy <span class="text-red-500">BP</span></span>
-                <span class="text-[8px] uppercase tracking-[0.4em] text-gray-400 font-bold">Quito Premium Edition</span>
+            <div class="flex flex-col text-left">
+                <span class="font-brand text-2xl tracking-widest leading-none mt-1 text-white uppercase">Legacy <span class="text-red-500">B</span><span class="text-blue-500">P</span></span>
+                <span class="text-[8px] uppercase tracking-[0.4em] text-gray-400 font-bold">Por Fernando David</span>
             </div>
         </div>
-        <button onclick="toggleAdminView()" class="p-2 text-gray-500 hover:text-white"><i data-lucide="shield-check" class="w-6 h-6"></i></button>
+        <!-- Acceso restringido al Panel Administrativo -->
+        <button onclick="toggleAdminView()" class="p-2 text-gray-500 hover:text-white transition-all">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </button>
     </nav>
 
-    <!-- VISTA 0: LANDING PAGE & MARKETING -->
+    <!-- VISTA 0: LANDING PAGE PRINCIPAL -->
     <section id="view-home" class="view min-h-screen">
-        <div class="hero-image min-h-[95vh] flex flex-col justify-end px-8 pb-32 relative pt-32">
-            <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-6 bg-white/5 w-fit px-4 py-2 rounded-full border border-white/10">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Cupos Limitados Hoy</span>
+        <!-- Hero Section: Impacto Visual Refinado -->
+        <div class="hero-section min-h-[90vh] flex flex-col justify-end px-8 pb-24 relative pt-32">
+            <div class="relative z-10 max-w-5xl mx-auto w-full">
+                <div class="flex items-center gap-3 mb-6 bg-white/5 w-fit px-4 py-2 rounded-full border border-white/10 backdrop-blur-md">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Abierto Ahora • Quito Central</span>
                 </div>
-                <h1 class="font-brand text-7xl sm:text-8xl md:text-[10rem] mb-4 leading-[0.85]">EL ARTE DE <br><span class="text-red-500">SER</span> <span class="text-blue-500">CABALLERO</span></h1>
-                <p class="text-gray-300 text-sm md:text-lg max-w-[400px] mb-12 font-light leading-relaxed">
-                    No es solo un corte, es tu identidad. Únete al club más exclusivo de Quito.
+                <h1 class="font-brand text-5xl sm:text-7xl md:text-8xl mb-4 leading-[0.9]">CORTES QUE <br><span class="text-red-500">MARCAN</span> <span class="text-blue-500">HISTORIA</span></h1>
+                <p class="text-gray-300 text-sm md:text-lg max-w-[450px] mb-10 font-light leading-relaxed">
+                    Artesanía pura en cada detalle. Reserva tu lugar en el trono de la elegancia masculina con nuestro sistema de alta precisión.
                 </p>
                 
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button onclick="changeView('step-services')" class="btn-barber px-12 py-6 rounded-sm font-brand text-3xl tracking-widest shadow-2xl">RESERVAR MI TRONO</button>
-                    <div class="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                    <button onclick="changeView('step-services')" class="btn-barber px-12 py-5 rounded-sm font-brand text-2xl tracking-widest shadow-2xl">RESERVAR MI TURNO</button>
+                    <!-- Prueba Social Real -->
+                    <div class="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
                         <div class="flex -space-x-3">
-                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=1" alt="u1">
-                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=2" alt="u2">
-                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=3" alt="u3">
+                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=1">
+                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=2">
+                            <img class="w-8 h-8 rounded-full border-2 border-black" src="https://i.pravatar.cc/100?u=3">
                         </div>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">+500 Clientes VIP</p>
                     </div>
                 </div>
             </div>
+            
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 scroll-indicator">
+                <i data-lucide="chevron-down" class="text-white/20 w-8 h-8"></i>
+            </div>
         </div>
 
-        <!-- MARKETING BANNER -->
-        <div class="px-6 -mt-20 relative z-20">
-            <div class="max-w-4xl mx-auto bg-gradient-to-r from-red-600/20 to-blue-600/20 border border-white/10 p-8 rounded-sm backdrop-blur-xl flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h3 class="font-brand text-3xl tracking-widest text-white">¡PRIMERA VISITA!</h3>
-                    <p class="text-xs text-gray-400">Obtén un <span class="text-red-500 font-bold">Cerveza Premium gratis</span> en tu primer servicio imperial.</p>
+        <!-- Banner de Marketing: Enganche para Clientes Nuevos -->
+        <div class="px-6 -mt-12 relative z-20">
+            <div class="max-w-4xl mx-auto bg-[#111] border border-white/10 p-8 rounded-sm backdrop-blur-xl flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl">
+                <div class="text-center md:text-left">
+                    <h3 class="font-brand text-3xl tracking-widest text-white uppercase">Cortesía de Leyenda</h3>
+                    <p class="text-xs text-gray-500">Disfruta de una <span class="text-red-500 font-bold italic underline">Cerveza artesanal o Café Premium</span> gratis en tu primer servicio imperial.</p>
                 </div>
-                <button onclick="changeView('step-services')" class="bg-white text-black font-brand text-xl px-8 py-3 rounded-sm hover:bg-gray-200 transition-all">RECLAMAR REGALO</button>
+                <button onclick="changeView('step-services')" class="bg-white text-black font-brand text-xl px-10 py-4 rounded-sm hover:scale-105 transition-all">RECLAMAR REGALO</button>
             </div>
         </div>
 
-        <!-- INFO CARDS -->
-        <div class="px-6 py-20 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="glass p-8 rounded-sm border-l-4 border-red-500">
-                <i data-lucide="award" class="text-red-500 w-8 h-8 mb-4"></i>
-                <h3 class="font-brand text-2xl tracking-widest">CALIDAD ELITE</h3>
-                <p class="text-xs text-gray-400 leading-relaxed">Implementos esterilizados y toallas de algodón egipcio en cada servicio.</p>
+        <!-- Tarjetas de Información Operativa -->
+        <div class="px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <div class="glass p-10 rounded-sm border-l-4 border-red-500 flex flex-col items-center text-center">
+                <i data-lucide="clock" class="text-red-500 w-8 h-8 mb-6"></i>
+                <h3 class="font-brand text-2xl tracking-widest uppercase mb-2">Horarios Reales</h3>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-widest">Lunes a Sábado</p>
+                <p class="text-lg font-bold text-white mt-2">09:00 AM - 20:00 PM</p>
             </div>
-            <div class="glass p-8 rounded-sm border-l-4 border-blue-500">
-                <i data-lucide="map" class="text-blue-500 w-8 h-8 mb-4"></i>
-                <h3 class="font-brand text-2xl tracking-widest">HUB QUITO</h3>
-                <p class="text-xs text-gray-400 leading-relaxed">Ubicación estratégica en el corazón financiero de la ciudad.</p>
+            <div class="glass p-10 rounded-sm border-l-4 border-blue-500 flex flex-col items-center text-center">
+                <i data-lucide="map-pin" class="text-blue-500 w-8 h-8 mb-6"></i>
+                <h3 class="font-brand text-2xl tracking-widest uppercase mb-2">Ubicación Elite</h3>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-widest">Quito Central</p>
+                <p class="text-lg font-bold text-white mt-2 font-light italic">Reserva Online Obligatoria</p>
             </div>
         </div>
 
-        <footer class="p-12 text-center border-t border-white/5">
-            <div class="animate-marquee opacity-10 mb-8">
-                <span class="font-brand text-6xl text-white mr-12">LEGACY BARBERSHOP • QUITO PREMIUM • ELITE STYLE • </span>
-                <span class="font-brand text-6xl text-white mr-12">LEGACY BARBERSHOP • QUITO PREMIUM • ELITE STYLE • </span>
+        <!-- MARCA DE AGUA (MARQUEE) - REFORMADA A UNA LÍNEA -->
+        <div class="py-8 overflow-hidden opacity-10 select-none border-y border-white/5">
+            <div class="animate-marquee whitespace-nowrap">
+                <span class="font-brand text-3xl md:text-4xl text-white mr-12 tracking-[0.3em] italic uppercase">DESIGN BY FERNANDO  CAJIAS • LEGACY BARBERSHOP • QUITO PREMIUM • ESTILO • TRADICIÓN • CALIDAD • </span>
+                <span class="font-brand text-3xl md:text-4xl text-white mr-12 tracking-[0.3em] italic uppercase">DESIGN BY FERNANDO  CAJIAS • LEGACY BARBERSHOP • QUITO PREMIUM • ESTILO • TRADICIÓN • CALIDAD • </span>
             </div>
-            <p class="font-brand text-2xl tracking-widest text-gray-500">THE ROYAL STANDARD</p>
+        </div>
+
+        <!-- Portafolio Visual (Galería) -->
+        <div class="px-6 py-24 max-w-5xl mx-auto">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <p class="text-red-500 font-bold text-[10px] uppercase tracking-[0.4em] mb-2">Nuestra Galería</p>
+                    <h2 class="font-brand text-5xl italic">Maestría en Detalle</h2>
+                </div>
+                <div class="h-[1px] flex-1 bg-white/5 mx-10 mb-4"></div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="aspect-[3/4] overflow-hidden rounded-sm border border-white/5 grayscale hover:grayscale-0 transition-all duration-700">
+                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+                <div class="aspect-[3/4] overflow-hidden rounded-sm border border-white/5 grayscale hover:grayscale-0 transition-all duration-700 mt-8">
+                    <img src="https://images.unsplash.com/photo-1599351431247-f586959c8c01?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+                <div class="aspect-[3/4] overflow-hidden rounded-sm border border-white/5 grayscale hover:grayscale-0 transition-all duration-700">
+                    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+                <div class="aspect-[3/4] overflow-hidden rounded-sm border border-white/5 grayscale hover:grayscale-0 transition-all duration-700 mt-8">
+                    <img src="https://images.unsplash.com/photo-1512690196252-741ed291f30b?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER HERMOSO -->
+        <footer class="pt-20 pb-10 border-t border-white/5 glass">
+            <div class="max-w-5xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                <!-- Columna 1: Branding -->
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 barber-border rounded-lg flex items-center justify-center overflow-hidden">
+                            <i data-lucide="scissors" class="text-white w-5 h-5 relative z-10"></i>
+                        </div>
+                        <span class="font-brand text-3xl tracking-widest text-white uppercase">Legacy <span class="text-red-500">BP</span></span>
+                    </div>
+                    <p class="text-xs text-gray-500 text-center md:text-left leading-relaxed">
+                        Definiendo el estándar del cuidado masculino en Quito. Calidad certificada y atención personalizada para cada caballero.
+                    </p>
+                </div>
+                
+                <!-- Columna 2: Redes Sociales -->
+                <div class="flex flex-col items-center">
+                    <h4 class="font-brand text-xl tracking-widest text-white mb-6 uppercase">Sigue el Estilo</h4>
+                    <div class="flex gap-6">
+                        <a href="#" class="p-3 bg-white/5 rounded-full hover:text-red-500 transition-colors border border-white/5">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="p-3 bg-white/5 rounded-full hover:text-blue-500 transition-colors border border-white/5">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="p-3 bg-white/5 rounded-full hover:text-emerald-500 transition-colors border border-white/5">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Columna 3: Créditos de Autoría -->
+                <div class="flex flex-col items-center md:items-end">
+                    <h4 class="font-brand text-xl tracking-widest text-white mb-6 uppercase">Sistema Oficial</h4>
+                    <div class="text-center md:text-right">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-2">Desarrollado por:</p>
+                        <p class="font-brand text-2xl text-red-500 tracking-[0.2em]">Fernando Cajias</p>
+                        <p class="text-[8px] text-gray-600 uppercase tracking-[0.3em] mt-1">Ingeniería Micro-SaaS Quito</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center border-t border-white/5 pt-10">
+                <p class="text-[9px] text-gray-700 uppercase tracking-[0.5em]">© 2026 LEGACY BARBER POLE • TODOS LOS DERECHOS RESERVADOS</p>
+            </div>
         </footer>
     </section>
 
-    <!-- CONTAINER DE RESERVAS -->
+    <!-- CONTAINER DE LA APLICACIÓN DE RESERVAS -->
     <main id="app-container" class="max-w-lg mx-auto px-6 pt-28 pb-20">
         
-        <!-- PASO 1: SERVICIOS CON CATEGORIAS -->
+        <!-- PASO 1: SELECCIÓN DE SERVICIO -->
         <section id="step-services" class="view hide">
-            <div class="mb-8">
-                <h2 class="font-brand text-6xl text-red-500 mb-2">LA CARTA</h2>
-                <p class="text-xs text-gray-500 uppercase tracking-widest">Nuestra selección exclusiva de Quito</p>
+            <div class="mb-8 text-center sm:text-left">
+                <h2 class="font-brand text-6xl text-red-500 mb-2 uppercase">La Carta</h2>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Servicios Premium • Precios Reales</p>
             </div>
-
-            <!-- TABS CATEGORIAS -->
-            <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-8">
-                <button onclick="filterServices('all')" id="tab-all" class="category-tab active whitespace-nowrap px-6 py-2 border border-white/10 rounded-sm text-xs font-bold uppercase tracking-widest transition-all">Todos</button>
-                <button onclick="filterServices('esencial')" id="tab-esencial" class="category-tab whitespace-nowrap px-6 py-2 border border-white/10 rounded-sm text-xs font-bold uppercase tracking-widest transition-all">Esenciales</button>
-                <button onclick="filterServices('combo')" id="tab-combo" class="category-tab whitespace-nowrap px-6 py-2 border border-white/10 rounded-sm text-xs font-bold uppercase tracking-widest transition-all">Experiencias</button>
-                <button onclick="filterServices('spa')" id="tab-spa" class="category-tab whitespace-nowrap px-6 py-2 border border-white/10 rounded-sm text-xs font-bold uppercase tracking-widest transition-all">Facial/Spa</button>
-            </div>
-
             <div id="services-grid" class="grid gap-4"></div>
         </section>
 
-        <!-- PASO 2: BARBERO -->
+        <!-- PASO 2: SELECCIÓN DE BARBERO -->
         <section id="step-barbers" class="view hide">
-            <button onclick="changeView('step-services')" class="mb-6 flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Volver a Servicios
+            <button onclick="changeView('step-services')" class="mb-6 flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2 text-red-500"></i> Volver a Carta
             </button>
-            <h2 class="font-brand text-6xl mb-6 text-blue-500">TU MAESTRO</h2>
+            <h2 class="font-brand text-6xl mb-6 text-blue-500 uppercase">El Maestro</h2>
             <div id="barbers-grid" class="grid gap-4"></div>
         </section>
 
-        <!-- PASO 3: FECHA Y HORA -->
+        <!-- PASO 3: FECHA, HORA Y DATOS PERSONALES -->
         <section id="step-datetime" class="view hide">
-            <button onclick="changeView('step-barbers')" class="mb-6 flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Cambiar Barbero
+            <button onclick="changeView('step-barbers')" class="mb-6 flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2 text-blue-500"></i> Cambiar Barbero
             </button>
-            <h2 class="font-brand text-6xl mb-8">RESERVAR</h2>
+            <h2 class="font-brand text-6xl mb-8 uppercase">Tu Turno</h2>
             
-            <div class="glass p-6 rounded-sm mb-8">
-                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-4 font-bold">Seleccionar Fecha</label>
-                <input type="date" id="booking-date" class="w-full bg-transparent border-b border-white/20 p-2 focus:outline-none focus:border-red-500 text-white font-bold text-xl uppercase">
+            <div class="glass p-6 rounded-sm mb-8 border border-white/5">
+                <label class="block text-[10px] uppercase tracking-widest text-gray-500 mb-4 font-bold">1. Seleccionar Día</label>
+                <input type="date" id="booking-date" onchange="loadAvailability()" class="w-full bg-transparent border-b border-white/20 p-2 focus:border-red-500 text-white font-bold text-xl uppercase outline-none transition-all">
             </div>
 
-            <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4 font-bold">Horarios Disponibles</p>
+            <div class="flex justify-between items-center mb-4 px-2">
+                <p class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">2. Horarios Libres</p>
+                <div id="availability-loader" class="flex items-center gap-2 hide">
+                    <div class="loading-spinner"></div>
+                    <span class="text-[9px] uppercase font-bold text-blue-500 animate-pulse">Analizando Agenda...</span>
+                </div>
+            </div>
+
             <div id="time-slots" class="grid grid-cols-3 gap-2 mb-10"></div>
 
             <div class="space-y-6">
-                <input type="text" id="user-name" placeholder="Tu Nombre Completo" class="w-full bg-transparent border-b border-white/20 p-4 focus:outline-none focus:border-blue-500 transition-all font-brand text-2xl tracking-widest uppercase">
-                <input type="tel" id="user-phone" placeholder="WhatsApp (Ej: 098...)" class="w-full bg-transparent border-b border-white/20 p-4 focus:outline-none focus:border-red-500 transition-all font-brand text-2xl tracking-widest uppercase">
+                <input type="text" id="user-name" placeholder="NOMBRE COMPLETO" class="w-full bg-transparent p-4 focus:outline-none font-brand text-2xl tracking-widest uppercase border-b border-white/20 focus:border-blue-500 transition-all">
+                <input type="tel" id="user-phone" placeholder="TELÉFONO (WhatsApp)" class="w-full bg-transparent p-4 focus:outline-none font-brand text-2xl tracking-widest uppercase border-b border-white/20 focus:border-red-500 transition-all">
                 
-                <button onclick="confirmBooking()" class="w-full btn-barber py-6 rounded-sm font-brand text-3xl tracking-[0.2em] shadow-xl mt-10">CONFIRMAR TURNO</button>
+                <button id="btn-confirm" onclick="confirmBooking()" class="w-full btn-barber py-6 rounded-sm font-brand text-3xl tracking-[0.2em] shadow-xl mt-10 flex justify-center items-center gap-3">
+                    <span id="btn-text">BLOQUEAR MI CITA</span>
+                    <div id="btn-loader" class="loading-spinner hide"></div>
+                </button>
             </div>
+        </section>
+
+        <!-- VISTA ADMIN: DASHBOARD DEL PROPIETARIO -->
+        <section id="view-admin" class="view hide">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="font-brand text-5xl text-blue-500 uppercase">ADMINISTRACIÓN</h2>
+                <button onclick="changeView('view-home')" class="p-3 bg-white/5 rounded-full"><i data-lucide="log-out" class="w-5 h-5 text-red-500"></i></button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <div class="glass p-6 rounded-lg border-l-4 border-red-500 text-center text-white">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Ingresos Estimados</p>
+                    <p id="admin-total" class="text-4xl font-brand mt-1">$0</p>
+                </div>
+                <div class="glass p-6 rounded-lg border-l-4 border-blue-500 text-center text-white">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Citas Hoy</p>
+                    <p id="admin-count" class="text-4xl font-brand mt-1">0</p>
+                </div>
+            </div>
+
+            <div id="admin-loading" class="flex flex-col items-center py-10 hide"><div class="loading-spinner mb-4"></div></div>
+            <div id="admin-appointments" class="space-y-4"></div>
         </section>
     </main>
 
-    <!-- SUCCESS MODAL -->
-    <div id="success-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/98 p-6 hide">
-        <div class="barber-border w-full max-w-sm p-12 rounded-sm text-center border-white/10 relative shadow-2xl">
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                <i data-lucide="check" class="w-10 h-10 text-black"></i>
+    <!-- MODAL DE ÉXITO: TICKET DIGITAL PERSONALIZADO -->
+    <div id="success-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-xl p-6 hide">
+        <div class="bg-[#111] w-full max-w-sm rounded-2xl overflow-hidden border border-white/10 shadow-2xl ticket-cut animate-in fade-in zoom-in duration-300">
+            <div class="bg-gradient-to-r from-red-600 to-blue-600 p-6 text-center">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
+                    <i data-lucide="check" class="w-10 h-10 text-black"></i>
+                </div>
+                <h2 class="font-brand text-4xl text-white tracking-widest uppercase">¡Reserva Élite!</h2>
             </div>
-            <h2 class="font-brand text-5xl mb-4 tracking-tighter">¡LISTO!</h2>
-            <p class="text-gray-400 text-[10px] uppercase tracking-widest mb-10 leading-relaxed">Tu lugar en el trono ha sido reservado. Envía el ticket para confirmar.</p>
             
-            <div class="flex flex-col gap-4">
-                <a id="manual-wa-link" href="#" target="_blank" class="w-full bg-white text-black font-brand text-2xl tracking-widest py-4 rounded-sm flex items-center justify-center gap-3 shadow-lg">
+            <div class="p-8 space-y-6">
+                <div class="flex flex-col items-center gap-2 border-b border-white/5 pb-6 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold">Autorización de Turno</p>
+                    <p id="ticket-id" class="font-brand text-xl text-white tracking-widest">RES-000000</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Cliente</p>
+                        <p id="ticket-client" class="text-sm font-bold text-white truncate italic uppercase">NOMBRE</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Maestro</p>
+                        <p id="ticket-barber" class="text-sm font-bold text-white truncate uppercase">BARBERO</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 border-t border-white/5 pt-6">
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Servicio</p>
+                        <p id="ticket-service" class="text-xs font-bold text-red-500 truncate uppercase">CORTE</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Horario</p>
+                        <p id="ticket-time" class="text-sm font-bold text-blue-500 uppercase tracking-widest">10:00 AM</p>
+                    </div>
+                </div>
+                <!-- Crédito de propiedad en el ticket -->
+                <p class="text-[8px] text-gray-600 text-center uppercase tracking-[0.2em] mt-4 font-bold italic">PROPIEDAD DE FERNANDO DAVID CAJIAS VACA</p>
+            </div>
+
+            <div class="p-6 bg-white/5 border-t border-white/5 flex flex-col gap-3">
+                <a id="manual-wa-link" href="#" target="_blank" class="w-full bg-white text-black font-brand text-2xl tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-200 transition-all">
                     <i data-lucide="send" class="w-5 h-5"></i> ENVIAR TICKET
                 </a>
-                <button onclick="closeSuccessModal()" class="text-gray-600 text-[10px] font-bold uppercase tracking-widest mt-4">CERRAR</button>
+                <button onclick="closeSuccessModal()" class="text-gray-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors">
+                    VOLVER AL INICIO
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- LÓGICA DE PROGRAMACIÓN (CEREBRO DEL SISTEMA) -->
     <script>
+        /**
+         * CONFIGURACIÓN GLOBAL DEL SISTEMA
+         * Responsable de la Arquitectura: Fernando David Cajias Vaca
+         */
+        const API_URL = "https://script.google.com/macros/s/AKfycbzrkkv0dR23XGCFMlsKmqUXgvmgPj4HDiYeO7HzdomW2lOj7vYvCdNYErMfzaNMrBc/exec"; 
         const BARBER_WHATSAPP = "593984071320";
 
-        // LOGICA DE NEGOCIO: PRECIOS REALES QUITO
+        // Definición del catálogo de servicios Premium
         const services = [
-            { id: 1, category: 'esencial', name: 'CORTE EXPRESS', price: 10, duration: '30 MIN', desc: 'Corte de mantenimiento rápido y preciso.' },
-            { id: 2, category: 'esencial', name: 'CORTE SIGNATURE', price: 15, duration: '45 MIN', desc: 'Nuestro corte estrella con lavado y perfilado.' },
-            { id: 3, category: 'esencial', name: 'BARBA TRADICIONAL', price: 12, duration: '30 MIN', desc: 'Afeitado a navaja clásica con toalla caliente.' },
-            { id: 4, category: 'combo', name: 'COMBO IMPERIAL', price: 25, duration: '75 MIN', desc: 'Corte Signature + Barba Imperial + Toalla.' },
-            { id: 5, category: 'combo', name: 'EL RITUAL DEL REY', price: 45, duration: '120 MIN', desc: 'Servicio Completo + Mascarilla + Bebida + Limpieza.' },
-            { id: 6, category: 'spa', name: 'LIMPIEZA FACIAL BLACK', price: 15, duration: '30 MIN', desc: 'Mascarilla purificante y exfoliación profunda.' },
-            { id: 7, category: 'spa', name: 'DISEÑO DE CEJAS', price: 8, duration: '15 MIN', desc: 'Perfilado profesional para una mirada definida.' }
+            { id: 1, name: 'CORTE SIGNATURE', price: 15, duration: '45 MIN', desc: 'Lavado + Perfilado Clásico.' },
+            { id: 2, name: 'BARBA TRADICIONAL', price: 12, duration: '30 MIN', desc: 'Navaja Clásica + Toalla Caliente.' },
+            { id: 3, name: 'COMBO IMPERIAL', price: 25, duration: '75 MIN', desc: 'Corte + Barba + Toalla.' },
+            { id: 4, name: 'RITUAL DEL REY', price: 45, duration: '120 MIN', desc: 'Servicio VIP Completo + Bebida.' }
         ];
 
+        // Listado de profesionales disponibles
         const barbers = [
-            { id: 101, name: 'MARCO "EL MAESTRO"', role: 'Especialista en Tijera Clásica', image: 'https://i.pravatar.cc/150?u=marco' },
-            { id: 102, name: 'JUAN "URBAN FADE"', role: 'Experto en Degradados Modernos', image: 'https://i.pravatar.cc/150?u=juan' }
+            { id: 101, name: 'MARCO "EL MAESTRO"', role: 'Especialista en Tijera', image: 'https://i.pravatar.cc/150?u=marco' },
+            { id: 102, name: 'JUAN "URBAN FADE"', role: 'Experto en Degradados', image: 'https://i.pravatar.cc/150?u=juan' }
         ];
 
-        const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+        // Horarios operativos de la barbería
+        const timeSlots = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+        
+        // Estado temporal de la sesión de reserva
         let bookingData = { service: null, barber: null, date: '', time: '', name: '', phone: '' };
+        let occupiedSlots = []; 
 
+        /**
+         * Función inicial de lanzamiento
+         */
         function init() {
-            filterServices('all');
+            renderServices();
             lucide.createIcons();
+            
+            // Establecer fecha mínima como HOY para evitar errores de agenda pasada
             const today = new Date().toISOString().split('T')[0];
             const dInput = document.getElementById('booking-date');
             if(dInput) { dInput.setAttribute('min', today); dInput.value = today; }
         }
 
+        /**
+         * Motor de navegación interno (Single Page Application)
+         */
         function changeView(viewId) {
+            // Ocultar todas las secciones
             document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
+            
+            // Mostrar la sección objetivo
             const target = document.getElementById(viewId);
             if(target) target.classList.remove('hide');
             
+            // Control especial para el Home (Landing)
             const home = document.getElementById('view-home');
             if(viewId !== 'view-home') home.classList.add('hide');
             else home.classList.remove('hide');
@@ -268,23 +497,18 @@
             lucide.createIcons();
         }
 
-        function filterServices(category) {
-            // Activar Tab
-            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(`tab-${category}`).classList.add('active');
-
+        /**
+         * Renderizado visual de los servicios en la carta
+         */
+        function renderServices() {
             const grid = document.getElementById('services-grid');
-            const filtered = category === 'all' ? services : services.filter(s => s.category === category);
-            
-            grid.innerHTML = filtered.map(s => `
-                <div onclick="selectService(${s.id})" class="glass p-6 rounded-sm flex items-center justify-between group cursor-pointer hover:border-red-500/50 transition-all border border-white/5 relative overflow-hidden">
-                    <div class="relative z-10 pr-4">
-                        <h3 class="font-brand text-3xl tracking-widest leading-tight text-white group-hover:text-red-500 transition-colors">${s.name}</h3>
+            grid.innerHTML = services.map(s => `
+                <div onclick="selectService(${s.id})" class="glass p-6 rounded-sm flex items-center justify-between group cursor-pointer hover:border-red-500 transition-all border border-white/5">
+                    <div class="text-left">
+                        <h3 class="font-brand text-3xl tracking-widest text-white group-hover:text-red-500 uppercase">${s.name}</h3>
                         <p class="text-[9px] text-gray-500 uppercase font-bold tracking-[0.2em] mt-1">${s.duration} • ${s.desc}</p>
                     </div>
-                    <div class="text-right shrink-0 relative z-10">
-                        <p class="font-brand text-4xl text-white group-hover:scale-110 transition-transform">$${s.price}</p>
-                    </div>
+                    <p class="font-brand text-4xl text-white shrink-0 ml-4">$${s.price}</p>
                 </div>
             `).join('');
             lucide.createIcons();
@@ -296,21 +520,17 @@
             changeView('step-barbers');
         }
 
+        /**
+         * Renderizado visual de los barberos
+         */
         function renderBarbers() {
             const grid = document.getElementById('barbers-grid');
             grid.innerHTML = barbers.map(b => `
-                <div onclick="selectBarber(${b.id})" class="glass p-6 rounded-sm flex items-center gap-6 cursor-pointer hover:border-blue-500/50 transition-all border border-white/5 group">
-                    <img src="${b.image}" class="w-24 h-24 rounded-sm border border-white/10 object-cover grayscale group-hover:grayscale-0 transition-all" />
-                    <div>
-                        <h3 class="font-brand text-3xl tracking-widest text-white">${b.name}</h3>
+                <div onclick="selectBarber(${b.id})" class="glass p-6 rounded-sm flex items-center gap-6 cursor-pointer hover:border-blue-500 border border-white/5 group">
+                    <img src="${b.image}" class="w-20 h-20 rounded-sm border border-white/10 object-cover grayscale group-hover:grayscale-0 transition-all" />
+                    <div class="text-left">
+                        <h3 class="font-brand text-3xl tracking-widest text-white uppercase">${b.name}</h3>
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${b.role}</p>
-                        <div class="flex gap-1 mt-2 text-blue-500">
-                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-                            <i data-lucide="star" class="w-3 h-3 fill-current"></i>
-                        </div>
                     </div>
                 </div>
             `).join('');
@@ -319,17 +539,81 @@
 
         function selectBarber(id) {
             bookingData.barber = barbers.find(b => b.id === id);
-            renderTimeSlots();
+            loadAvailability(); 
             changeView('step-datetime');
         }
 
+        /**
+         * Consulta síncrona de disponibilidad al backend (Google Sheets)
+         */
+        async function loadAvailability() {
+            const selectedDate = document.getElementById('booking-date').value;
+            const loader = document.getElementById('availability-loader');
+            if(!selectedDate || !bookingData.barber) return;
+
+            loader.classList.remove('hide');
+            occupiedSlots = []; 
+            try {
+                // Petición al "cerebro" en la nube
+                const response = await fetch(`${API_URL}?action=get_occupied&date=${selectedDate}&barber=${encodeURIComponent(bookingData.barber.name)}`);
+                const text = await response.text();
+                occupiedSlots = JSON.parse(text);
+            } catch (e) { console.error("Error de sincronización de agenda", e); }
+
+            loader.classList.add('hide');
+            renderTimeSlots();
+        }
+
+        /**
+         * Lógica de filtrado de horarios: Evita reservas en el pasado o duplicadas
+         */
         function renderTimeSlots() {
+            const selectedDate = document.getElementById('booking-date').value;
+            const now = new Date();
+            // Ajuste estricto a zona horaria de Quito
+            const quitoTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Guayaquil"}));
+            const todayDate = quitoNow(quitoTime);
+            const currentHour = quitoTime.getHours();
+            const currentMinutes = quitoTime.getMinutes();
+            
             const container = document.getElementById('time-slots');
-            container.innerHTML = timeSlots.map(t => `
-                <button onclick="selectTime('${t}', this)" class="slot-btn glass py-4 rounded-sm border border-white/5 text-[10px] font-bold tracking-widest hover:border-white transition-all uppercase">
-                    ${t}
-                </button>
-            `).join('');
+            container.innerHTML = timeSlots.map(t => {
+                const [hour, minutes] = t.split(':').map(Number);
+                
+                // 1. Detección de tiempo pasado (Solo aplica para HOY)
+                let isPast = false;
+                if(selectedDate === todayDate) {
+                    if(hour < currentHour) isPast = true;
+                    if(hour === currentHour && currentMinutes > 15) isPast = true; 
+                }
+
+                // 2. Detección de ocupación según el Excel
+                const isOccupied = occupiedSlots.some(slot => {
+                    const clean = (s) => s.split(':').map(n => parseInt(n)).join(':');
+                    return clean(slot) === clean(t);
+                });
+
+                let statusClass = "";
+                let isDisabled = false;
+
+                if (isPast) { statusClass = "time-slot-disabled"; isDisabled = true; } 
+                else if (isOccupied) { statusClass = "time-slot-occupied"; isDisabled = true; }
+
+                return `
+                    <button onclick="selectTime('${t}', this)" ${isDisabled ? 'disabled' : ''} class="slot-btn glass py-4 rounded-sm border border-white/5 text-[10px] font-bold tracking-widest hover:border-white transition-all uppercase ${statusClass}">${t}</button>
+                `;
+            }).join('');
+        }
+
+        // Utilidad de formateo de fecha ISO local
+        function quitoNow(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            let year = d.getFullYear();
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            return [year, month, day].join('-');
         }
 
         function selectTime(time, el) {
@@ -338,47 +622,134 @@
             el.classList.add('bg-white', 'text-black', 'border-white');
         }
 
-        function confirmBooking() {
-            bookingData.name = document.getElementById('user-name').value;
-            bookingData.phone = document.getElementById('user-phone').value;
+        /**
+         * Sincronización final, guardado en Nube y apertura de WhatsApp
+         */
+        async function confirmBooking() {
+            bookingData.name = document.getElementById('user-name').value.trim();
+            bookingData.phone = document.getElementById('user-phone').value.trim();
             bookingData.date = document.getElementById('booking-date').value;
 
             if (!bookingData.name || !bookingData.phone || !bookingData.time) {
-                alert("COMPLETA TUS DATOS PARA ACCEDER AL TRONO.");
+                alert("CABALLERO, POR FAVOR COMPLETE TODOS LOS DATOS PARA PROCEDER.");
                 return;
             }
 
-            const modal = document.getElementById('success-modal');
-            modal.classList.remove('hide');
+            const btn = document.getElementById('btn-confirm');
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+            
+            btnText.innerText = "REGISTRANDO...";
+            btnLoader.classList.remove('hide');
+            btn.disabled = true;
 
-            const message = `💈 *LEGACY BARBER SHOP - QUITO* 💈\n\n` +
-                          `👤 *Cliente:* ${bookingData.name.toUpperCase()}\n` +
-                          `📞 *Contacto:* ${bookingData.phone}\n` +
-                          `✂️ *Servicio:* ${bookingData.service.name}\n` +
-                          `🤵 *Barber:* ${bookingData.barber.name}\n` +
-                          `📅 *Fecha:* ${bookingData.date}\n` +
-                          `⏰ *Hora:* ${bookingData.time}\n\n` +
-                          `_Reserva Elite enviada desde la Web App_`;
+            const resId = "RES-" + Math.floor(Math.random() * 900000 + 100000);
+            
+            const payload = {
+                action: 'save_booking',
+                ...bookingData,
+                resId: resId,
+                serviceName: bookingData.service.name,
+                barberName: bookingData.barber.name,
+                price: bookingData.service.price
+            };
 
+            try {
+                // Persistencia de datos en Google Apps Script
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                });
+            } catch (e) { console.error("Error crítico de persistencia", e); }
+
+            // Actualización dinámica del Ticket de Éxito
+            document.getElementById('ticket-id').innerText = resId;
+            document.getElementById('ticket-client').innerText = bookingData.name.toUpperCase();
+            document.getElementById('ticket-barber').innerText = bookingData.barber.name;
+            document.getElementById('ticket-service').innerText = bookingData.service.name;
+            document.getElementById('ticket-time').innerText = bookingData.time;
+
+            btnText.innerText = "BLOQUEAR MI CITA";
+            btnLoader.classList.add('hide');
+            btn.disabled = false;
+
+            // Visualización del Modal de Ticket
+            document.getElementById('success-modal').classList.remove('hide');
+
+            // Generación de mensaje para confirmación humana vía WhatsApp
+            const message = `💈 *RESERVA ÉLITE - LEGACY BARBER* 💈\n\n🆔 *ID:* ${resId}\n👤 *CLIENTE:* ${bookingData.name.toUpperCase()}\n📞 *TEL:* ${bookingData.phone}\n✂️ *SERVICIO:* ${bookingData.service.name}\n🤵 *MAESTRO:* ${bookingData.barber.name}\n📅 *FECHA:* ${bookingData.date}\n⏰ *HORA:* ${bookingData.time}\n\n_Confirmado automáticamente vía App Pro por Fernando David_`;
+            
             const waUrl = `https://api.whatsapp.com/send?phone=${BARBER_WHATSAPP}&text=${encodeURIComponent(message)}`;
             document.getElementById('manual-wa-link').href = waUrl;
 
-            setTimeout(() => {
-                window.open(waUrl, '_blank');
-            }, 3000);
+            // Tiempo de espera para que el usuario aprecie el ticket antes de saltar a WA
+            setTimeout(() => { window.open(waUrl, '_blank'); }, 2500);
         }
 
+        /**
+         * Reinicio del flujo de la App
+         */
         function closeSuccessModal() {
             document.getElementById('success-modal').classList.add('hide');
             bookingData = { service: null, barber: null, date: '', time: '', name: '', phone: '' };
+            document.getElementById('user-name').value = "";
+            document.getElementById('user-phone').value = "";
             changeView('view-home');
         }
 
-        function toggleAdminView() {
-            const pin = prompt("🔐 CÓDIGO MAESTRO:");
-            if (pin === "1234") changeView('view-admin');
+        /**
+         * Acceso administrativo y Dashboard financiero
+         */
+        async function toggleAdminView() {
+            const pin = prompt("🔐 CÓDIGO MAESTRO DE FERNANDO:");
+            if (pin === "1234") {
+                changeView('view-admin');
+                await fetchAdminData();
+            }
         }
 
+        async function fetchAdminData() {
+            const grid = document.getElementById('admin-appointments');
+            const loading = document.getElementById('admin-loading');
+            grid.innerHTML = "";
+            loading.classList.remove('hide');
+
+            try {
+                const response = await fetch(`${API_URL}?action=get_bookings`);
+                const data = await response.json();
+                
+                loading.classList.add('hide');
+                document.getElementById('admin-count').innerText = data.length;
+                let total = 0;
+
+                // Generación de lista de citas desde la nube
+                grid.innerHTML = data.reverse().map((b) => {
+                    if(b.status === 'Completada') total += parseFloat(b.price);
+                    return `
+                        <div class="glass p-5 rounded-sm border-l-2 border-white/10 flex justify-between items-center text-left">
+                            <div>
+                                <p class="font-brand text-xl text-white">${b.name}</p>
+                                <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">${b.serviceName} • ${b.date} ${b.time}</p>
+                                <p class="text-[8px] text-blue-500 uppercase tracking-tighter">Barbero: ${b.barberName}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-brand text-lg text-red-500">$${b.price}</p>
+                                <p class="text-[8px] uppercase font-bold text-gray-400">${b.status}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('admin-total').innerText = `$${total}`;
+                lucide.createIcons();
+            } catch (e) {
+                loading.classList.add('hide');
+                grid.innerHTML = `<div class="p-10 text-center text-red-500 text-xs font-bold uppercase">ERROR DE SINCRONIZACIÓN NUBE</div>`;
+            }
+        }
+
+        // Evento de carga inicial del DOM
         window.onload = init;
     </script>
 </body>
